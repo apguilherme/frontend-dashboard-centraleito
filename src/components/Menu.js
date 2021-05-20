@@ -107,7 +107,6 @@ export default function MiniDrawer() {
 
   const handleChangePage = (value) => {
     setPage(value);
-    console.log(value);
   }
 
   return (
@@ -152,6 +151,7 @@ export default function MiniDrawer() {
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </div>
+        
         <Divider />
 
         <List>
@@ -167,7 +167,7 @@ export default function MiniDrawer() {
 
           <ListItem button key="3" onClick={() => handleChangePage("Gerir Unidades")}>
             <ListItemIcon><AddCircle /></ListItemIcon>
-            <ListItemText primary="Gerir Unidade" />
+            <ListItemText primary="Gerir Unidades" />
           </ListItem>
 
           <ListItem button key="4" onClick={() => handleChangePage("Perfil")}>
@@ -175,6 +175,7 @@ export default function MiniDrawer() {
             <ListItemText primary="Perfil" />
           </ListItem>
 
+          <Divider />
           <ListItem button key="5" onClick={() => handleChangePage("Sair")}>
             <ListItemIcon><ExitToApp /></ListItemIcon>
             <ListItemText primary="Sair" />

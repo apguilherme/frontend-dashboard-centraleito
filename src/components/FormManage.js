@@ -4,19 +4,6 @@ import { TextField, Paper, Grid, Button } from '@material-ui/core';
 const onSubmit = async values => {
   alert("Ok");
 };
-const validate = values => {
-  const errors = {};
-  if (!values.firstName) {
-    errors.firstName = 'Required';
-  }
-  if (!values.lastName) {
-    errors.lastName = 'Required';
-  }
-  if (!values.email) {
-    errors.email = 'Required';
-  }
-  return errors;
-};
 
 export default function FormAdd() {
   return (
@@ -34,7 +21,7 @@ export default function FormAdd() {
               <TextField fullWidth required name="city" type="text" label="Cidade" />
             </Grid>
             <Grid item xs={6}>
-              <TextField fullWidth required name="state" type="text" label="Estado" />
+              <TextField fullWidth required name="state" type="text" label="UF" />
             </Grid>
 
             <Grid item xs={12}>
