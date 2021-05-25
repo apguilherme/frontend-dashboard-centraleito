@@ -1,32 +1,52 @@
 import * as React from 'react';
+import axios from 'axios';
 import { DataGrid } from '@material-ui/data-grid';
-
-const columns = [
-  { field: 'id', headerName: 'ID', width: 150 },
-  { field: 'name', headerName: 'Unidade', width: 200 },
-  { field: 'city', headerName: 'Cidade', width: 200 },
-  { field: 'state', headerName: 'Estado', width: 150},
-  { field: 'address', headerName: 'Endereço', width: 150},
-  { field: 'quantity', headerName: 'Leitos', width: 150},
-  { field: 'occupied', headerName: 'Ocupados', width: 150},
-];
-
-const rows = [
-  { id: 1, name: 'Snow', city: 'Jon', state: "SP", address: "aaa", quantity: 10, occupied: 9 },
-  { id: 2, name: 'Lannister', city: 'Cersei', state: "SP", address: "aaa", quantity: 10, occupied: 9 },
-  { id: 3, name: 'Lannister', city: 'Jaime', state: "SP", address: "aaa", quantity: 10, occupied: 9 },
-  { id: 4, name: 'Stark', city: 'Arya', state: "SP", address: "aaa", quantity: 10, occupied: 9 },
-  { id: 5, name: 'Targaryen', city: 'Daenerys', state: "SP", address: "aaa", quantity: 10, occupied: 9 },
-  { id: 6, name: 'Melisandre', city: "Ok", state: "SP", address: "aaa", quantity: 10, occupied: 9 },
-  { id: 7, name: 'Clifford', city: 'Ferrara', state: "SP", address: "aaa", quantity: 10, occupied: 9 },
-  { id: 8, name: 'Frances', city: 'Rossini', state: "SP", address: "aaa", quantity: 10, occupied: 9 },
-  { id: 9, name: 'Roxie', city: 'Harvey', state: "SP", address: "aaa", quantity: 10, occupied: 9 },
-];
+import { CircularProgress } from '@material-ui/core';
 
 export default function DataTable() {
+
+  const columns = [
+    { field: 'id', headerName: 'ID', width: 150 },
+    { field: 'name', headerName: 'Unidade', width: 200 },
+    { field: 'city', headerName: 'Cidade', width: 200 },
+    { field: 'uf', headerName: 'UF', width: 150 },
+    { field: 'address', headerName: 'Endereço', width: 150 },
+    { field: 'num_beds', headerName: 'Leitos', width: 150 },
+    { field: 'num_beds_occupied', headerName: 'Ocupados', width: 150 },
+    { field: 'person_contact', headerName: 'Contato', width: 150 },
+  ];
+
+  const [rows, setRows] = React.useState([]);
+  const [load, setLoad] = React.useState(false);
+
+  React.useEffect(() => {
+    setLoad(true);
+    axios.get("http://localhost:3333/hospitals")
+      .then(res => {
+        let r = [];
+        for (let item of res.data){
+          r.push({
+            id: item?._id, 
+            name: item?.name, 
+            city: item?.city, 
+            uf: item?.uf, 
+            address: item?.address, 
+            num_beds: item?.num_beds, 
+            num_beds_occupied: item?.num_beds_occupied,
+            person_contact: item?.person_contact,
+          })
+        }
+        setRows(r);
+        setLoad(false);
+      });
+  }, []);
+
   return (
     <div style={{ height: 400, width: '100%' }}>
-      <DataGrid rows={rows} columns={columns} pageSize={5} checkboxSelection />
+      {
+        load ? <CircularProgress color="secondary" /> :
+        <DataGrid rows={rows} columns={columns} pageSize={5} checkboxSelection />
+      }
     </div>
   );
 }

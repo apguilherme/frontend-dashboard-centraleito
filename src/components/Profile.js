@@ -9,14 +9,21 @@ export default function Profile() {
   const [password, setPassword] = React.useState("");
   const [load, setLoad] = React.useState(false);
 
-  const handleName = e => {
-    setName(e.target.value);
-  };
-  const handleEmail = e => {
-    setEmail(e.target.value);
-  };
-  const handlePassword = e => {
-    setPassword(e.target.value);
+  const handleField = (e, field) => {
+    let value = e.target.value;
+    switch (field) {
+      case "name":
+        setName(value);
+        break;
+      case "email":
+        setEmail(value);
+        break;
+      case "password":
+        setPassword(value);
+        break;
+      default:
+        break;
+    }
   };
 
   React.useEffect(() => {
@@ -26,9 +33,9 @@ export default function Profile() {
         setName(res.data?.name);
         setEmail(res.data?.email);
         setPassword(res.data?.password);
-        setLoad(false)
+        setLoad(false);
       });
-  }, [])
+  }, []);
 
   const onSubmit = async (event) => {
     event.preventDefault();
@@ -50,14 +57,14 @@ export default function Profile() {
               <Grid container alignItems="flex-start" spacing={2}>
 
                 <Grid item xs={12}>
-                  <TextField fullWidth required value={name} type="text" label="Nome do usuário" onChange={e => handleName(e)} />
+                  <TextField fullWidth required value={name} type="text" label="Nome do usuário" onChange={e => handleField(e, "name")} />
                 </Grid>
 
                 <Grid item xs={12}>
-                  <TextField fullWidth required value={email} type="text" label="Email do usuário" onChange={e => handleEmail(e)} />
+                  <TextField fullWidth required value={email} type="text" label="Email do usuário" onChange={e => handleField(e, "email")} />
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField fullWidth required value={password} type="text" label="Senha do usuário" onChange={e => handlePassword(e)} />
+                  <TextField fullWidth required value={password} type="text" label="Senha do usuário" onChange={e => handleField(e, "password")} />
                 </Grid>
 
                 <Grid item style={{ marginTop: 16 }}>

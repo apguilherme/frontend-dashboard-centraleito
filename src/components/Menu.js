@@ -165,9 +165,9 @@ export default function MiniDrawer() {
             <ListItemText primary="Listagem" />
           </ListItem>
 
-          <ListItem button key="3" onClick={() => handleChangePage("Gerir Unidades")}>
+          <ListItem button key="3" onClick={() => handleChangePage("Adicionar Unidade")}>
             <ListItemIcon><AddCircle /></ListItemIcon>
-            <ListItemText primary="Gerir Unidades" />
+            <ListItemText primary="Adicionar Unidade" />
           </ListItem>
 
           <ListItem button key="4" onClick={() => handleChangePage("Perfil")}>
@@ -191,7 +191,7 @@ export default function MiniDrawer() {
 
         {page === 'Listagem' && <DataTable />}
         {page === 'Dashboard' && <Dashboard />}
-        {page === 'Gerir Unidades' && <FormManage />}
+        {page === 'Adicionar Unidade' && <FormManage />}
         {page === 'Perfil' && <Profile />}
 
       </main>
