@@ -1,5 +1,5 @@
 import React from 'react';
-import axios from 'axios';
+import api from '../api';
 import { TextField, Paper, Grid, Button, CircularProgress } from '@material-ui/core';
 
 export default function Profile() {
@@ -28,7 +28,7 @@ export default function Profile() {
 
   React.useEffect(() => {
     setLoad(true);
-    axios.get("http://localhost:3333/user/60a5e00b77f2684b98bd3692")
+    api.get("http://localhost:3333/user/60a5e00b77f2684b98bd3692", {headers: {"x-access-token": localStorage.getItem("contraleito-token")}})
       .then(res => {
         setName(res.data?.name);
         setEmail(res.data?.email);
@@ -40,7 +40,7 @@ export default function Profile() {
   const onSubmit = async (event) => {
     event.preventDefault();
     setLoad(true);
-    axios.put("http://localhost:3333/user", { id: "60a5e00b77f2684b98bd3692", name, email, password })
+    api.put("http://localhost:3333/user", { id: "60a5e00b77f2684b98bd3692", name, email, password }, {headers: {"x-access-token":localStorage.getItem("contraleito-token")}})
       .then(res => {
         setLoad(false);
       });

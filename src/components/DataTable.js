@@ -1,5 +1,5 @@
 import * as React from 'react';
-import axios from 'axios';
+import api from '../api';
 import { DataGrid } from '@material-ui/data-grid';
 import { CircularProgress } from '@material-ui/core';
 
@@ -21,7 +21,7 @@ export default function DataTable() {
 
   React.useEffect(() => {
     setLoad(true);
-    axios.get("http://localhost:3333/hospitals")
+    api.get("/hospitals", {headers: {"x-access-token": localStorage.getItem("contraleito-token")}})
       .then(res => {
         let r = [];
         for (let item of res.data){

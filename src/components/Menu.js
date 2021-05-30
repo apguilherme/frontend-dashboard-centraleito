@@ -27,6 +27,8 @@ import Dashboard from './Dashboard';
 import Profile from './Profile';
 import FormManage from './FormManage';
 
+import api from '../api';
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -91,7 +93,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MiniDrawer() {
+export default function MiniDrawer({ setIsAuth }) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -105,11 +107,36 @@ export default function MiniDrawer() {
     setOpen(false);
   };
 
-  const handleChangePage = (value) => {
-    setPage(value);
+  const validateTkn = async () => {
+    const tkn = localStorage.getItem("centraleito-token");
+    let response = null;
+    await api.get("/verifyToken", { headers: { "x-access-token": tkn } })
+    .then(res => { response = res; })
+    .catch(e => { console.log(e); })
+    return response;
+  }
+
+  const handleChangePage = async (value) => {
+    if (value === "Sair") {
+      await localStorage.removeItem("centraleito-token");
+      let tkn = localStorage.getItem("centraleito-token");
+      setIsAuth(tkn);
+      console.log("Logout, token:", tkn);
+    }
+    else {
+      const isValid = await validateTkn();
+      if(isValid && isValid.data.valid){
+        setPage(value);
+      }
+      else{
+        alert(isValid.data.message);
+      }
+    };
+
   }
 
   return (
+
     <div className={classes.root}>
       <CssBaseline />
       <AppBar
@@ -151,7 +178,7 @@ export default function MiniDrawer() {
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </div>
-        
+
         <Divider />
 
         <List>

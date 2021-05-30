@@ -1,5 +1,5 @@
 import React from 'react';
-import axios from 'axios';
+import api from '../api';
 import { TextField, Paper, Grid, Button, CircularProgress } from '@material-ui/core';
 
 export default function FormAdd() {
@@ -48,7 +48,7 @@ export default function FormAdd() {
 
   React.useEffect(() => {
     setLoad(true);
-    axios.get("http://localhost:3333/hospital/60a5e00b77f2684b98bd3692")
+    api.get("http://localhost:3333/hospital/60a5e00b77f2684b98bd3692", {headers: {"x-access-token": localStorage.getItem("contraleito-token")}})
       .then(res => {
         setName(res.data?.name);
         setCity(res.data?.city);
@@ -65,7 +65,7 @@ export default function FormAdd() {
   const onSubmit = async (event) => {
     event.preventDefault();
     setLoad(true);
-    axios.post("http://localhost:3333/hospital", { name, city, uf, address, num_beds, num_beds_occupied, person_name, person_contact })
+    api.post("/hospital", { name, city, uf, address, num_beds, num_beds_occupied, person_name, person_contact }, {headers: {"x-access-token": localStorage.getItem("contraleito-token")}})
       .then(res => {
         setLoad(false);
       });

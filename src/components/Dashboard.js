@@ -1,12 +1,11 @@
 import * as React from 'react';
-import axios from 'axios';
+import api from '../api';
 import { Grid, CircularProgress } from '@material-ui/core';
 
 import BarChart from './plots/BarChart';
 import LineChart from './plots/LineChart';
 import GroupedBarChart from './plots/GroupedBarChart'
 import BarHorizontalChart from './plots/BarHorizontalChart'
-import { ContactSupportOutlined } from '@material-ui/icons';
 
 export default function Dashboard() {
 
@@ -22,7 +21,7 @@ export default function Dashboard() {
 
     React.useEffect(() => {
         setLoad(true);
-        axios.get("http://localhost:3333/hospitals")
+        api.get("/hospitals", {headers: {"x-access-token": localStorage.getItem("contraleito-token")}})
             .then(res => {
                 let datasets = [];
                 let labels = ["Total de leitos", "Total ocupados"];
@@ -37,7 +36,6 @@ export default function Dashboard() {
                     );
                 }
                 setData({ labels, datasets });
-                console.log(data)
                 setLoad(false);
             });
     }, []);
