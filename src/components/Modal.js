@@ -3,8 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import {Button, Dialog, AppBar, Toolbar, IconButton, Typography, Slide} from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 
-import FormManage from '../components/FormManage';
-import api from '../api';
+import ManageBed from './ManageBed';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -20,7 +19,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function FullScreenDialog({showModal, setShowModal, selectedHospital}) {
+export default function FullScreenDialog({showModal, setShowModal, selectedBed}) {
   const classes = useStyles();
 
   const handleClickOpen = () => {
@@ -31,13 +30,6 @@ export default function FullScreenDialog({showModal, setShowModal, selectedHospi
     setShowModal(false);
   };
 
-  const handleRemove = async () => {
-    await api.delete("/hospital", { data: {id: selectedHospital._id} }, { headers: { "x-access-token": localStorage.getItem("contraleito-token") } })
-    .then(res => {
-        alert("Removed.");
-    })
-  };
-
   return (
     <div>
       <Button variant="outlined" color="primary" onClick={handleClickOpen}>
@@ -46,18 +38,11 @@ export default function FullScreenDialog({showModal, setShowModal, selectedHospi
       <Dialog fullScreen open={showModal} onClose={handleClose} TransitionComponent={Transition}>
         <AppBar className={classes.appBar}>
           <Toolbar>
-            <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
-              <CloseIcon />
-            </IconButton>
-            <Typography variant="h6" className={classes.title}>
-              Atualização de dados
-            </Typography>
-            <Button autoFocus color="inherit" onClick={handleRemove}>
-              Remover
-            </Button>
+            <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close"><CloseIcon /></IconButton>
+            <Typography variant="h6" className={classes.title}>Atualização de dados</Typography>
           </Toolbar>
         </AppBar>
-        <FormManage selectedHospital={selectedHospital} />
+        <ManageBed selectedBed={selectedBed} setShowModal={setShowModal} />
       </Dialog>
     </div>
   );

@@ -21,21 +21,26 @@ export default function Dashboard() {
 
     React.useEffect(() => {
         setLoad(true);
-        api.get("/hospitals", {headers: {"x-access-token": localStorage.getItem("contraleito-token")}})
+        api.get("/hospitals", { headers: { "x-access-token": localStorage.getItem("contraleito-token") } })
             .then(res => {
-                let datasets = [];
-                let labels = ["Total de leitos", "Total ocupados"];
-                for (let item of res.data) {
+                if (res.data.length > 0) {
+                    let emptyBeds = 0;
+                    for (let bed of res.data[0]?.beds) {
+                        if (bed.name === "") {
+                            emptyBeds += 1;
+                        }
+                    };
+                    let labels = ["Total leitos", "Leitos ocupados", "Leitos livres"];
                     let color = colorGen();
-                    datasets.push(
+                    let datasets = [
                         {
-                            label: item?.name,
-                            data: [item?.num_beds, item?.num_beds_occupied],
+                            label: res.data[0]?.name,
+                            data: [res.data[0]?.beds.length, res.data[0]?.beds.length - emptyBeds, emptyBeds],
                             backgroundColor: `rgb(${color.r}, ${color.g}, ${color.b})`
                         }
-                    );
+                    ];
+                    setData({ labels, datasets });
                 }
-                setData({ labels, datasets });
                 setLoad(false);
             });
     }, []);

@@ -18,14 +18,14 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import Poll from '@material-ui/icons/Poll';
 import Person from '@material-ui/icons/Person';
-import AddCircle from '@material-ui/icons/AddCircle';
-import FilterList from '@material-ui/icons/FilterList';
+import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
 import ExitToApp from '@material-ui/icons/ExitToApp';
+import HotelIcon from '@material-ui/icons/Hotel';
 
 import DataTable from './DataTable';
 import Dashboard from './Dashboard';
 import Profile from './Profile';
-import FormManage from './FormManage';
+import ManageHospital from './ManageHospital';
 
 import api from '../api';
 
@@ -97,7 +97,7 @@ export default function MiniDrawer({ setIsAuth }) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const [page, setPage] = React.useState('Listagem');
+  const [page, setPage] = React.useState('Dashboard');
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -182,28 +182,28 @@ export default function MiniDrawer({ setIsAuth }) {
         <Divider />
 
         <List>
-          <ListItem button key="1" onClick={() => handleChangePage("Dashboard")}>
+          <ListItem button key="a" onClick={() => handleChangePage("Dashboard")}>
             <ListItemIcon><Poll /></ListItemIcon>
             <ListItemText primary="Dashboard" />
           </ListItem>
 
-          <ListItem button key="2" onClick={() => handleChangePage("Listagem")}>
-            <ListItemIcon><FilterList /></ListItemIcon>
-            <ListItemText primary="Listagem" />
+          <ListItem button key="b" onClick={() => handleChangePage("Meus Leitos")}>
+            <ListItemIcon><HotelIcon /></ListItemIcon>
+            <ListItemText primary="Meus Leitos" />
           </ListItem>
 
-          <ListItem button key="3" onClick={() => handleChangePage("Adicionar Unidade")}>
-            <ListItemIcon><AddCircle /></ListItemIcon>
-            <ListItemText primary="Adicionar Unidade" />
+          <ListItem button key="d" onClick={() => handleChangePage("Meu Hospital")}>
+            <ListItemIcon><LocalHospitalIcon /></ListItemIcon>
+            <ListItemText primary="Meu Hospital" />
           </ListItem>
 
-          <ListItem button key="4" onClick={() => handleChangePage("Perfil")}>
+          <ListItem button key="e" onClick={() => handleChangePage("Perfil")}>
             <ListItemIcon><Person /></ListItemIcon>
             <ListItemText primary="Perfil" />
           </ListItem>
 
           <Divider />
-          <ListItem button key="5" onClick={() => handleChangePage("Sair")}>
+          <ListItem button key="f" onClick={() => handleChangePage("Sair")}>
             <ListItemIcon><ExitToApp /></ListItemIcon>
             <ListItemText primary="Sair" />
           </ListItem>
@@ -216,9 +216,9 @@ export default function MiniDrawer({ setIsAuth }) {
 
         <h1>{page}</h1>
 
-        {page === 'Listagem' && <DataTable />}
+        {page === 'Meus Leitos' && <DataTable />}
         {page === 'Dashboard' && <Dashboard />}
-        {page === 'Adicionar Unidade' && <FormManage />}
+        {page === 'Meu Hospital' && <ManageHospital />}
         {page === 'Perfil' && <Profile />}
 
       </main>

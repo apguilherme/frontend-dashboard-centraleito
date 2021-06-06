@@ -1,27 +1,30 @@
 import * as React from 'react';
 import api from '../api';
 import { DataGrid } from '@material-ui/data-grid';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress, Button } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 
 import Modal from './Modal';
+import Card from './Card';
 
 export default function DataTable() {
 
   const [rows, setRows] = React.useState([]);
   const [load, setLoad] = React.useState(false);
   const [showModal, setShowModal] = React.useState(false);
-  const [selectedHospital, setSelectedHospital] = React.useState([]);
+  const [selectedBed, setSelectedBed] = React.useState({});
+  const [cardsData, setCardsData] = React.useState({});
 
   const columns = [
-    //{ field: 'id', headerName: 'ID', width: 150 },
-    { field: 'name', headerName: 'Unidade', width: 200 },
+    { field: 'id', headerName: 'ID leito', width: 150 },
+    { field: 'name', headerName: 'Paciente', width: 200 },
     { field: 'city', headerName: 'Cidade', width: 200 },
-    { field: 'uf', headerName: 'UF', width: 150 },
-    { field: 'address', headerName: 'Endereço', width: 150 },
-    { field: 'num_beds', headerName: 'Leitos', width: 150 },
-    { field: 'num_beds_occupied', headerName: 'Ocupados', width: 150 },
-    { field: 'rate_occupied', headerName: 'Tax Ocup.', width: 150 },
-    { field: 'person_contact', headerName: 'Contato', width: 150 },
+    { field: 'uf', headerName: 'UF', width: 100 },
+    { field: 'age', headerName: 'Idade', width: 150 },
+    { field: 'document', headerName: 'Documento', width: 150 },
+    { field: 'time_waiting', headerName: 'Tempo', width: 150 },
+    { field: 'contact', headerName: 'Contato', width: 150 },
+    { field: 'severity', headerName: 'Severidade', width: 150 },
     {
       field: 'actions', headerName: 'Ações', width: 150, renderCell: (params) => {
         return (<a href="#">Edit</a>)
@@ -34,21 +37,34 @@ export default function DataTable() {
     api.get("/hospitals", { headers: { "x-access-token": localStorage.getItem("contraleito-token") } })
       .then(res => {
         let r = [];
-        for (let item of res.data) {
-          r.push({
-            id: item?._id,
-            name: item?.name,
-            city: item?.city,
-            uf: item?.uf,
-            address: item?.address,
-            num_beds: item?.num_beds,
-            num_beds_occupied: item?.num_beds_occupied,
-            rate_occupied: item?.num_beds > 0 ? `${((item?.num_beds_occupied / item?.num_beds) * 100).toFixed(1)} %` : "Zero leitos",
-            person_contact: item?.person_contact,
-            actions: "Edit"
-          })
+        let emptyBeds = 0;
+        if (res.data.length > 0) {
+          let beds = res.data[0].beds;
+          for (let bed of beds) {
+            r.push({
+              id: bed?._id,
+              name: bed?.name,
+              city: bed?.city,
+              uf: bed?.uf,
+              age: bed?.age,
+              document: bed?.document,
+              time_waiting: bed?.time_waiting,
+              contact: bed?.contact,
+              severity: bed?.severity,
+              actions: "Edit"
+            });
+            if (bed?.name === "") {
+              emptyBeds += 1;
+            }
+          }
         }
         setRows(r);
+        setCardsData({
+          name: res.data[0]?.name,
+          rate_occupied: emptyBeds > 0 ? `${(((res.data[0]?.beds.length - emptyBeds) / res.data[0]?.beds.length) * 100).toFixed(1)} %` : "100 %",
+          num_beds: res.data[0]?.beds.length > 0 ? res.data[0]?.beds.length : "0",
+          num_beds_free: emptyBeds,
+        })
         setLoad(false);
       });
   }, [showModal]);
@@ -56,35 +72,35 @@ export default function DataTable() {
   const handleRowClick = async (param, event) => {
     setLoad(true);
     event.stopPropagation();
-    await api.get(`/hospital/${param.row.id}`, { headers: { "x-access-token": localStorage.getItem("contraleito-token") } })
+    await api.get(`/bed/${param.row.id}`, { headers: { "x-access-token": localStorage.getItem("contraleito-token") } })
       .then(res => {
-        setSelectedHospital({
-          _id: res.data._id,
-          ownerId: res.data.ownerId,
-          name: res.data.name,
-          city: res.data.city,
-          uf: res.data.uf,
-          address: res.data.address,
-          num_beds: res.data.num_beds,
-          num_beds_occupied: res.data.num_beds_occupied,
-          num_waiting: res.data.num_waiting,
-          time_waiting: res.data.time_waiting,
-          person_name: res.data.person_name,
-          person_contact: res.data.person_contact
-        });
+        setSelectedBed(res.data);
       });
     setLoad(false);
     setShowModal(true);
   };
 
+  const handlenewBed = () => {
+    setSelectedBed(null);
+    setShowModal(true);
+  }
+
   return (
     <div style={{ height: 400, width: '100%' }}>
+
+      <Card cardsData={cardsData} />
+
+      <div style={{display: 'flex', flexDirection: "row", alignItems: "center"}}>
+        <h2>Leitos</h2>
+        <Button size="small" variant="contained" color="primary" onClick={handlenewBed} style={{marginLeft: "16px"}}><AddIcon /> Novo leito</Button>
+      </div>
+
       {
         load ? <CircularProgress color="secondary" /> :
-          <DataGrid rows={rows} columns={columns} pageSize={5} onRowClick={handleRowClick} />
+          <DataGrid rows={rows} columns={columns} pageSize={10} onRowClick={handleRowClick} />
       }
       {
-        showModal && <Modal showModal={showModal} setShowModal={setShowModal} selectedHospital={selectedHospital} />
+        showModal && <Modal showModal={showModal} setShowModal={setShowModal} selectedBed={selectedBed} />
       }
     </div>
   );

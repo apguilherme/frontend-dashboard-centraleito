@@ -70,7 +70,7 @@ export default function Profile() {
                   <TextField fullWidth required value={email} type="text" label="Email do usuário" onChange={e => handleField(e, "email")} />
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField fullWidth required value={password} type="text" label="Senha do usuário" onChange={e => handleField(e, "password")} />
+                  <TextField fullWidth required value={password} type="password" label="Senha do usuário" onChange={e => handleField(e, "password")} />
                 </Grid>
 
                 <Grid item style={{ marginTop: 16 }}>
