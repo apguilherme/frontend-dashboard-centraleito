@@ -1,27 +1,38 @@
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
 
-export default function GroupedBar({ data }) {
-  // const data = {
-  //   labels: ['1', '2', '3', '4', '5', '6'],
-  //   datasets: [
-  //     {
-  //       label: 'FAKE 1',
-  //       data: [12, 19, 3, 5, 2, 3],
-  //       backgroundColor: 'rgb(255, 99, 132)',
-  //     },
-  //     {
-  //       label: 'FAKE 2',
-  //       data: [2, 3, 20, 5, 1, 4],
-  //       backgroundColor: 'rgb(54, 162, 235)',
-  //     },
-  //     {
-  //       label: 'FAKE 3',
-  //       data: [3, 10, 13, 15, 22, 30],
-  //       backgroundColor: 'rgb(75, 192, 192)',
-  //     },
-  //   ],
-  // };
+export default function GroupedBar({ response }) {
+
+  const [data, setData] = React.useState([]);
+
+  function colorGen() {
+    var r = Math.floor(Math.random() * 255) + 1;
+    var g = Math.floor(Math.random() * 255) + 1;
+    var b = Math.floor(Math.random() * 255) + 1;
+    return { r, g, b };
+  }
+
+  React.useEffect(() => {
+    if (response.data !== undefined && response.data.length > 0) {
+      let emptyBeds = 0;
+      for (let bed of response.data[0]?.beds) {
+        if (bed.name === "") {
+          emptyBeds += 1;
+        }
+      };
+      let labels = ["Total leitos", "Leitos ocupados", "Leitos livres"];
+      let color = colorGen();
+      let datasets = [
+        {
+          label: response.data[0]?.name,
+          data: [response.data[0]?.beds.length, response.data[0]?.beds.length - emptyBeds, emptyBeds],
+          backgroundColor: `rgb(${color.r}, ${color.g}, ${color.b})`
+        }
+      ];
+      setData({ labels, datasets });
+    }
+  }, []);
+
 
   const options = {
     scales: {

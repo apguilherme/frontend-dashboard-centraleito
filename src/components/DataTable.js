@@ -61,7 +61,7 @@ export default function DataTable() {
         setRows(r);
         setCardsData({
           name: res.data[0]?.name,
-          rate_occupied: emptyBeds > 0 ? `${(((res.data[0]?.beds.length - emptyBeds) / res.data[0]?.beds.length) * 100).toFixed(1)} %` : "100 %",
+          rate_occupied: emptyBeds > 0 ? `${(100*(res.data[0]?.beds.length - emptyBeds) / res.data[0]?.beds.length).toFixed(1)} %` : "100 %",
           num_beds: res.data[0]?.beds.length > 0 ? res.data[0]?.beds.length : "0",
           num_beds_free: emptyBeds,
         })
