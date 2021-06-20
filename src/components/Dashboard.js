@@ -5,6 +5,7 @@ import { Grid, CircularProgress } from '@material-ui/core';
 import BarChart from './plots/BarChart';
 import GroupedBarChart from './plots/GroupedBarChart'
 import BarHorizontalChart from './plots/BarHorizontalChart'
+import Card from './Card'
 
 export default function Dashboard() {
 
@@ -21,24 +22,26 @@ export default function Dashboard() {
     }, []);
 
     return (
-        <Grid container alignItems="flex-start" spacing={8}>
+        <>
             {
                 load && response.length === 0 ? <CircularProgress color="secondary" /> :
                     <>
-                        <Grid item xs={6}>
-                            <GroupedBarChart response={response} />
-                        </Grid>
+                        <Card />
+                        <Grid container alignItems="flex-start" spacing={8}>
+                            <Grid item xs={6}>
+                                <GroupedBarChart response={response} />
+                            </Grid>
 
-                        <Grid item xs={6}>
-                            <BarChart response={response} />
-                        </Grid>
+                            <Grid item xs={6}>
+                                <BarChart response={response} />
+                            </Grid>
 
-                        <Grid item xs={6}>
-                            <BarHorizontalChart />
+                            <Grid item xs={6}>
+                                <BarHorizontalChart />
+                            </Grid>
                         </Grid>
-
                     </>
             }
-        </Grid>
+        </>
     );
 }

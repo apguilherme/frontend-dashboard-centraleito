@@ -20,73 +20,74 @@ export default function VerticalBar({ response }) {
       let avgDays = [];
       let color = colorGen();
       for (let bed of response.data[0]?.beds) {
-        if (bed.age !== ""){
+        if (bed.age !== "") {
           ages.push(bed.age);
         }
       };
       let labels = [...new Set(ages)];
       labels.sort();
-      for (let age of labels){
+      for (let age of labels) {
         let count = ages.filter(x => x === age).length;
         let days = 0;
         ageCount.push(count);
-        for (let bed of response.data[0]?.beds){
-          if (bed.age === age){
+        for (let bed of response.data[0]?.beds) {
+          if (bed.age === age) {
             days += parseInt(bed.time_waiting);
           }
         }
-        avgDays.push(days/count);
-        console.log(days, count, days/count)
+        avgDays.push(days / count);
       }
+      labels = labels.map(age => age + " anos");
       datasets.push(
         {
           type: 'line',
-          label: 'Tempo internação',
+          label: 'Tempo médio internação (dias)',
           borderColor: `rgb(0, 0, 0)`,
-          fill: false,
           data: avgDays,
-          yAxisID: 'y-axis-1',
+          yAxisID: 'y-axis-2',
         },
       );
       datasets.push(
         {
-          label: "Idade",
+          type: 'bar',
+          label: "Quantidade de internados",
           data: ageCount,
           backgroundColor: `rgb(${color.r}, ${color.g}, ${color.b})`,
-          yAxisID: 'y-axis-2',
+          yAxisID: 'y-axis-1',
         }
       );
-      
+
       setData({ labels, datasets });
     }
   }, []);
 
   const options = {
     scales: {
-      yAxes: [
-        {
-          type: 'bar',
-          display: true,
-          position: 'left',
-          id: 'y-axis-1',
-          gridLines: {
-            drawOnArea: false,
-          },
+      'y-axis-1': {
+        position: 'left',
+        gridLines: {
+          display: false
         },
-        {
-          type: 'linear',
-          display: true,
-          position: 'right',
-          id: 'y-axis-2',
-          gridLines: {
-            drawOnArea: false,
-          },
+        ticks: {
+          stepSize: 1,
         },
-      ],
+      },
+      'y-axis-2': {
+        position: 'right',
+        gridLines: {
+          display: false
+        },
+        ticks: {
+          stepSize: 1,
+        },
+      },
     },
   };
 
   return (
-    <Bar data={data} options={options} />
+    <>
+      <h2>Total por idade x Tempo médio internação</h2>
+      <Bar data={data} options={options} />
+    </>
   )
 };

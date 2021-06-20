@@ -47,6 +47,9 @@ export default function GroupedBar({ response }) {
   };
 
   return (
+    <>
+    <h2>Leitos Ocupados x Livres</h2>
     <Bar data={data} options={options} />
+    </>
   )
 }

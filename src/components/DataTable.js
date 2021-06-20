@@ -13,7 +13,6 @@ export default function DataTable() {
   const [load, setLoad] = React.useState(false);
   const [showModal, setShowModal] = React.useState(false);
   const [selectedBed, setSelectedBed] = React.useState({});
-  const [cardsData, setCardsData] = React.useState({});
 
   const columns = [
     { field: 'id', headerName: 'ID leito', width: 150 },
@@ -25,6 +24,7 @@ export default function DataTable() {
     { field: 'time_waiting', headerName: 'Tempo', width: 150 },
     { field: 'contact', headerName: 'Contato', width: 150 },
     { field: 'severity', headerName: 'Severidade', width: 150 },
+    { field: 'sex', headerName: 'Sexo', width: 150 },
     {
       field: 'actions', headerName: 'Ações', width: 150, renderCell: (params) => {
         return (<a href="#">Edit</a>)
@@ -51,6 +51,7 @@ export default function DataTable() {
               time_waiting: bed?.time_waiting,
               contact: bed?.contact,
               severity: bed?.severity,
+              sex: bed?.sex,
               actions: "Edit"
             });
             if (bed?.name === "") {
@@ -59,12 +60,6 @@ export default function DataTable() {
           }
         }
         setRows(r);
-        setCardsData({
-          name: res.data[0]?.name,
-          rate_occupied: emptyBeds > 0 ? `${(100*(res.data[0]?.beds.length - emptyBeds) / res.data[0]?.beds.length).toFixed(1)} %` : "100 %",
-          num_beds: res.data[0]?.beds.length > 0 ? res.data[0]?.beds.length : "0",
-          num_beds_free: emptyBeds,
-        })
         setLoad(false);
       });
   }, [showModal]);
@@ -88,7 +83,7 @@ export default function DataTable() {
   return (
     <div style={{ height: 400, width: '100%' }}>
 
-      <Card cardsData={cardsData} />
+      <Card />
 
       <div style={{display: 'flex', flexDirection: "row", alignItems: "center"}}>
         <h2>Leitos</h2>

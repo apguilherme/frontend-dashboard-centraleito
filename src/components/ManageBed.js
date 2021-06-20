@@ -15,6 +15,7 @@ export default function FormAdd({ selectedBed = null, setShowModal }) {
     const [time_waiting, setTimeWaiting] = React.useState("");
     const [contact, setContact] = React.useState("");
     const [severity, setSeverity] = React.useState("");
+    const [sex, setSex] = React.useState("");
     const [load, setLoad] = React.useState(false);
     const [isClean, setIsClean] = React.useState(false);
 
@@ -30,9 +31,10 @@ export default function FormAdd({ selectedBed = null, setShowModal }) {
             setTimeWaiting(selectedBed.time_waiting);
             setContact(selectedBed.contact);
             setSeverity(selectedBed.severity);
+            setSex(selectedBed.sex);
             setIsClean(false);
         }
-        else{
+        else {
             setIsClean(true);
         }
     }, []);
@@ -40,7 +42,7 @@ export default function FormAdd({ selectedBed = null, setShowModal }) {
     const onSubmit = async (event) => {
         event.preventDefault();
         setLoad(true);
-        await api.post("/bed", { name, city, uf: selectedUf, age, document, time_waiting, contact, severity }, { headers: { "x-access-token": localStorage.getItem("contraleito-token") } });
+        await api.post("/bed", { name, city, uf: selectedUf, age, document, time_waiting, contact, severity, sex }, { headers: { "x-access-token": localStorage.getItem("contraleito-token") } });
         setLoad(false);
         setShowModal(false);
     };
@@ -72,6 +74,9 @@ export default function FormAdd({ selectedBed = null, setShowModal }) {
             case "severity":
                 setSeverity(value);
                 break;
+            case "sex":
+                setSex(value);
+                break;
             default:
                 break;
         }
@@ -79,13 +84,13 @@ export default function FormAdd({ selectedBed = null, setShowModal }) {
 
     const handleUpdate = async () => {
         setLoad(true);
-        await api.put("/bed", { hospitalId, id, name, city, uf: selectedUf, age, document, time_waiting, contact, severity }, { headers: { "x-access-token": localStorage.getItem("contraleito-token") } })
+        await api.put("/bed", { hospitalId, id, name, city, uf: selectedUf, age, document, time_waiting, contact, severity, sex }, { headers: { "x-access-token": localStorage.getItem("contraleito-token") } })
         setLoad(false);
         setShowModal(false);
     };
 
     const handleRemove = async () => {
-        await api.delete("/bed", { data: {id: selectedBed._id, hospitalId: selectedBed.hospitalId} }, { headers: { "x-access-token": localStorage.getItem("contraleito-token") } })
+        await api.delete("/bed", { data: { id: selectedBed._id, hospitalId: selectedBed.hospitalId } }, { headers: { "x-access-token": localStorage.getItem("contraleito-token") } })
             .then(res => {
                 setHospitalId("");
                 setId("");
@@ -97,6 +102,7 @@ export default function FormAdd({ selectedBed = null, setShowModal }) {
                 setTimeWaiting("");
                 setContact("");
                 setSeverity("");
+                setSex("");
                 setIsClean(true);
                 setShowModal(false);
             })
@@ -144,8 +150,11 @@ export default function FormAdd({ selectedBed = null, setShowModal }) {
                                 <Grid item xs={12}>
                                     <TextField fullWidth required name="contact" type="text" label="Contato do responsável" onChange={e => handleField(e, "contact")} value={contact} />
                                 </Grid>
-                                <Grid item xs={12}>
+                                <Grid item xs={6}>
                                     <TextField fullWidth required name="severity" type="text" label="Severidade" onChange={e => handleField(e, "severity")} value={severity} />
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <TextField fullWidth required name="sex" type="text" label="Sexo" onChange={e => handleField(e, "sex")} value={sex} />
                                 </Grid>
 
                                 <Grid item style={{ marginTop: 16 }}>
@@ -154,7 +163,7 @@ export default function FormAdd({ selectedBed = null, setShowModal }) {
                                             ?
                                             <div>
                                                 <Button variant="contained" color="primary" type="button" onClick={() => handleUpdate()}>Atualizar</Button>
-                                                <Button variant="contained" color="secondary" type="button" onClick={() => handleRemove()} style={{marginLeft: "16px"}}>Remover</Button>
+                                                <Button variant="contained" color="secondary" type="button" onClick={() => handleRemove()} style={{ marginLeft: "16px" }}>Remover</Button>
                                             </div>
                                             :
                                             <Button variant="contained" color="primary" type="submit">Adicionar</Button>
