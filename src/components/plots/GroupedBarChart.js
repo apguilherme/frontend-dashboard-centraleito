@@ -20,12 +20,12 @@ export default function GroupedBar({ response }) {
           emptyBeds += 1;
         }
       };
-      let labels = ["Total leitos", "Leitos ocupados", "Leitos livres"];
+      let labels = ["Leitos ocupados", "Leitos livres"];
       let color = colorGen();
       let datasets = [
         {
           label: response.data[0]?.name,
-          data: [response.data[0]?.beds.length, response.data[0]?.beds.length - emptyBeds, emptyBeds],
+          data: [response.data[0]?.beds.length - emptyBeds, emptyBeds],
           backgroundColor: `rgb(${color.r}, ${color.g}, ${color.b})`
         }
       ];

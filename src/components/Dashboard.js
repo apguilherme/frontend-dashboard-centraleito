@@ -4,7 +4,7 @@ import { Grid, CircularProgress } from '@material-ui/core';
 
 import BarChart from './plots/BarChart';
 import GroupedBarChart from './plots/GroupedBarChart'
-import BarHorizontalChart from './plots/BarHorizontalChart'
+import PieChart from './plots/PieChart'
 import Card from './Card'
 
 export default function Dashboard() {
@@ -37,7 +37,7 @@ export default function Dashboard() {
                             </Grid>
 
                             <Grid item xs={6}>
-                                <BarHorizontalChart />
+                                <PieChart response={response} />
                             </Grid>
                         </Grid>
                     </>
