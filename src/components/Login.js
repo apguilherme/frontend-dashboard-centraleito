@@ -87,7 +87,7 @@ export default function Login({ setIsAuth }) {
                                     <Button variant="contained" color="primary" type="submit">Entrar</Button>
                                 </Grid>
                                 <Grid item style={{ marginTop: 16 }}>
-                                    <Button variant="contained" color="info" type="button" onClick={() => toggle()} style={{marginLeft: "16px"}}>Cadastrar</Button>
+                                    <Button variant="contained" color="inherit" type="button" onClick={() => toggle()} style={{marginLeft: "16px"}}>Cadastrar</Button>
                                 </Grid>
                             </Grid>
                             <p style={{ color: "red" }}>{err}</p>
@@ -110,7 +110,7 @@ export default function Login({ setIsAuth }) {
                                     <Button variant="contained" color="primary" type="submit">Cadastrar</Button>
                                 </Grid>
                                 <Grid item style={{ marginTop: 16 }}>
-                                    <Button variant="contained" color="info" type="button" onClick={() => toggle()}>Login</Button>
+                                    <Button variant="contained" color="inherit" type="button" onClick={() => toggle()}>Login</Button>
                                 </Grid>
                             </Grid>
                             <p style={{ color: "red" }}>{err}</p>
