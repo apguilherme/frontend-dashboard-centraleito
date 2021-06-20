@@ -1,7 +1,7 @@
 const axios = require("axios");
 
 const api = axios.create({
-  baseURL: process.env.PRODURL || "http://127.0.0.1:3333"
+  baseURL: process.env.PRODURL ? "https://backend-dashboard-centraleito.herokuapp.com" : "http://127.0.0.1:3333"
 });
 
 api.interceptors.request.use(async config => {
