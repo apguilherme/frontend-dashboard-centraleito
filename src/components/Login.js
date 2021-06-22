@@ -1,16 +1,26 @@
 import React from 'react';
-import { TextField, Paper, Grid, Button } from '@material-ui/core';
+import { TextField, Paper, Grid, Button, Select, MenuItem, InputLabel, CircularProgress } from '@material-ui/core';
+import Dashboard from './Dashboard';
+import TabPanel from './TabPanel';
+
+import BarChart from './plots/BarChart';
+import GroupedBarChart from './plots/GroupedBarChart'
+import PieChart from './plots/PieChart'
 
 import api from "../api";
 
 export default function Login({ setIsAuth }) {
 
-    const [isLogin, setIsLogin] = React.useState(true);
     const [name, setName] = React.useState("");
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [load, setLoad] = React.useState(false);
     const [err, setErr] = React.useState("");
+    const [hospitalNames, setHospitalNames] = React.useState([]);
+    const [selectedHospital, setSelectedHospital] = React.useState("");
+    const [selectedHospitalObj, setSelectedHosptalObj] = React.useState("");
+    const [response, setResponse] = React.useState("");
+    const [tab, setTab] = React.useState(0);
 
     const handleField = (e, field) => {
         let value = e.target.value;
@@ -57,7 +67,7 @@ export default function Login({ setIsAuth }) {
                 if (res.data.message) {
                     setErr(res.data.message);
                 }
-                else{
+                else {
                     alert("Registred. You can sign in now.");
                 }
             }).catch(e => {
@@ -65,15 +75,38 @@ export default function Login({ setIsAuth }) {
             })
     };
 
-    const toggle = () => {
-        setErr("");
-        setIsLogin(!isLogin);
+    const changeHosp = (h) => {
+        setSelectedHospital(h);
     }
 
+    React.useEffect(() => {
+        if (response !== "") {
+            let r = { ...response };
+            r.data = r.data.filter(hosp => hosp.name !== selectedHospital);
+            setSelectedHosptalObj({ ...r });
+        }
+    }, [selectedHospital])
+
+    React.useEffect(() => {
+        setLoad(true);
+        api.get("/all-hospitals")
+            .then(res => {
+                let r = { ...res };
+                let names = r.data.map(h => h.name);
+                r.data = r.data.filter(hosp => hosp.name === r.data[0].name);
+                setResponse(res);
+                setHospitalNames(names);
+                setSelectedHospital(r.data[0].name);
+                setLoad(false);
+            });
+    }, [])
+
     return (
-        <div style={{ padding: 64, margin: 'auto', maxWidth: "40%" }}>
+        <>
+            <TabPanel tab={tab} setTab={setTab} />
             {
-                isLogin ?
+                tab === 0 &&
+                <div style={{ padding: 64, margin: 'auto', maxWidth: "40%" }}>
                     <form onSubmit={onSubmit}>
                         <Paper style={{ padding: 16 }}>
                             <Grid container alignItems="flex-start" spacing={2}>
@@ -86,14 +119,15 @@ export default function Login({ setIsAuth }) {
                                 <Grid item style={{ marginTop: 16 }}>
                                     <Button variant="contained" color="primary" type="submit">Entrar</Button>
                                 </Grid>
-                                <Grid item style={{ marginTop: 16 }}>
-                                    <Button variant="contained" color="inherit" type="button" onClick={() => toggle()} style={{marginLeft: "16px"}}>Cadastrar</Button>
-                                </Grid>
                             </Grid>
                             <p style={{ color: "red" }}>{err}</p>
                         </Paper>
                     </form>
-                    :
+                </div>
+            }
+            {
+                tab === 1 &&
+                <div style={{ padding: 64, margin: 'auto', maxWidth: "40%" }}>
                     <form onSubmit={handleSignUp}>
                         <Paper style={{ padding: 16 }}>
                             <Grid container alignItems="flex-start" spacing={2}>
@@ -109,14 +143,47 @@ export default function Login({ setIsAuth }) {
                                 <Grid item style={{ marginTop: 16 }}>
                                     <Button variant="contained" color="primary" type="submit">Cadastrar</Button>
                                 </Grid>
-                                <Grid item style={{ marginTop: 16 }}>
-                                    <Button variant="contained" color="inherit" type="button" onClick={() => toggle()}>Login</Button>
-                                </Grid>
                             </Grid>
                             <p style={{ color: "red" }}>{err}</p>
                         </Paper>
                     </form>
+                </div>
             }
-        </div>
+            {
+                tab === 2 &&
+                <div style={{ padding: 64, margin: 'auto', maxWidth: "80%" }}>
+                    {
+                        load ? <CircularProgress color="secondary" /> :
+                            <>
+                                <InputLabel id="select-uf">Selecione um hospital</InputLabel>
+                                <Select fullWidth required labelId="select-hospital" name="hospital" type="text" value={selectedHospital} onChange={e => changeHosp(e.target.value)}>
+                                    {
+                                        hospitalNames?.map(item => {
+                                            return (<MenuItem key={item} value={item}>{item}</MenuItem>)
+                                        })
+                                    }
+                                </Select>
+                                {
+                                    selectedHospitalObj !== "" &&
+                                    <Grid container alignItems="flex-start" spacing={8} key={selectedHospital}>
+                                        <Grid item xs={6}>
+                                            <GroupedBarChart response={selectedHospitalObj} />
+                                        </Grid>
+
+                                        <Grid item xs={6}>
+                                            <BarChart response={selectedHospitalObj} />
+                                        </Grid>
+
+                                        <Grid item xs={6}>
+                                            <PieChart response={selectedHospitalObj} />
+                                        </Grid>
+                                    </Grid>
+                                }
+
+                            </>
+                    }
+                </div>
+            }
+        </>
     );
 }

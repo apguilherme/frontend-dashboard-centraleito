@@ -37,7 +37,6 @@ export default function DataTable() {
     api.get("/hospitals", { headers: { "x-access-token": localStorage.getItem("contraleito-token") } })
       .then(res => {
         let r = [];
-        let emptyBeds = 0;
         if (res.data.length > 0) {
           let beds = res.data[0].beds;
           for (let bed of beds) {
@@ -54,9 +53,6 @@ export default function DataTable() {
               sex: bed?.sex,
               actions: "Edit"
             });
-            if (bed?.name === "") {
-              emptyBeds += 1;
-            }
           }
         }
         setRows(r);
